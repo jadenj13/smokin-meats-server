@@ -2,6 +2,7 @@ import * as express from 'express';
 import { ApolloServer, gql } from 'apollo-server-express';
 import { DocumentNode } from 'graphql';
 import * as mongoose from 'mongoose';
+import * as jwt from 'jsonwebtoken';
 import schemas from './schemas';
 import resolvers from './resolvers';
 import { UserAPI } from './data-sources';
@@ -36,7 +37,19 @@ class Server {
     req: express.Request;
     res: express.Response;
   }) {
-    return { req, res };
+    let user = null;
+    const header = req.headers['authorization'];
+    if (header) {
+      const token = header.replace('Bearer ', '');
+
+      try {
+        user = jwt.verify(token, config.jwtSecret);
+      } catch (error) {
+        // ignore
+      }
+    }
+
+    return { req, res, user };
   }
 
   private buildDataSources() {
