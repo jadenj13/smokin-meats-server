@@ -3,6 +3,7 @@ import { ApolloServer, gql } from 'apollo-server-express';
 import { DocumentNode } from 'graphql';
 import * as mongoose from 'mongoose';
 import * as jwt from 'jsonwebtoken';
+import * as cookieParser from 'cookie-parser';
 import schemas from './schemas';
 import resolvers from './resolvers';
 import { UserAPI } from './data-sources';
@@ -12,6 +13,8 @@ class Server {
   public app: express.Application = express();
 
   constructor() {
+    this.app.use(cookieParser());
+
     const isDev = process.env.NODE_ENV === 'development';
     const typeDefs: DocumentNode = gql(schemas);
 
@@ -38,10 +41,8 @@ class Server {
     res: express.Response;
   }) {
     let user = null;
-    const header = req.headers['authorization'];
-    if (header) {
-      const token = header.replace('Bearer ', '');
-
+    const { token } = req.cookies;
+    if (token) {
       try {
         user = jwt.verify(token, config.jwtSecret);
       } catch (error) {
