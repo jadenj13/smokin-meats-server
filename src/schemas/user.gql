@@ -1,15 +1,20 @@
 type User {
+  id: ID!
   username: String!
   role: String!
-  permissions: [String!]!
-  id: ID!
   created: Date!
 }
 
+input UserInput {
+  username: String!
+  password: String!
+}
+
 type Query {
-  
+  test: String
 }
 
 type Mutation {
-  
+  register(input: UserInput!): User!
+  signIn(input: UserInput!): User!
 }
