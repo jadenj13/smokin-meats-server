@@ -1,0 +1,15 @@
+type User {
+  username: String!
+  role: String!
+  permissions: [String!]!
+  id: ID!
+  created: Date!
+}
+
+type Query {
+  
+}
+
+type Mutation {
+  
+}
