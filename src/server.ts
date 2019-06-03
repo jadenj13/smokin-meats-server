@@ -24,12 +24,14 @@ class Server {
       context: this.buildContext,
       dataSources: this.buildDataSources,
       introspection: isDev,
-      playground: isDev,
+      playground: isDev
+        ? { settings: { 'request.credentials': 'include' } }
+        : false,
     });
 
     server.applyMiddleware({
       app: this.app,
-      cors: isDev,
+      cors: { credentials: true, origin: true },
     });
   }
 
