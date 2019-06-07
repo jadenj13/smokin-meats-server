@@ -24,12 +24,14 @@ class Server {
       context: this.buildContext,
       dataSources: this.buildDataSources,
       introspection: isDev,
-      playground: isDev,
+      playground: isDev
+        ? { settings: { 'request.credentials': 'include' } }
+        : false,
     });
 
     server.applyMiddleware({
       app: this.app,
-      cors: isDev,
+      cors: { credentials: true, origin: true },
     });
   }
 
@@ -41,10 +43,10 @@ class Server {
     res: express.Response;
   }) {
     let user = null;
-    const { token } = req.cookies;
+    const token = req.headers['authorization'];
     if (token) {
       try {
-        user = jwt.verify(token, config.jwtSecret);
+        user = jwt.verify(token.replace('Bearer ', ''), config.jwtSecret);
       } catch (error) {
         // ignore
       }
