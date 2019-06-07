@@ -44,13 +44,31 @@ class Resolvers {
       throw new AuthenticationError(error.message);
     }
   }
+
+  public async getCurrentUser(
+    parent: any,
+    args: {},
+    { user, dataSources }: Context,
+  ) {
+    if (!user) {
+      return {};
+    }
+
+    try {
+      const currentUser = await dataSources.user.findById(user.userId);
+      return currentUser;
+    } catch (error) {
+      console.error(error.stack);
+      throw new ApolloError(error.message);
+    }
+  }
 }
 
 const resolvers = new Resolvers();
 
 export default {
   Query: {
-    test: () => 'asdf',
+    currentUser: resolvers.getCurrentUser,
   },
   Mutation: {
     register: resolvers.register,

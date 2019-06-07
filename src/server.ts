@@ -43,10 +43,10 @@ class Server {
     res: express.Response;
   }) {
     let user = null;
-    const { token } = req.cookies;
+    const token = req.headers['authorization'];
     if (token) {
       try {
-        user = jwt.verify(token, config.jwtSecret);
+        user = jwt.verify(token.replace('Bearer ', ''), config.jwtSecret);
       } catch (error) {
         // ignore
       }
