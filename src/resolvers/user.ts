@@ -51,7 +51,7 @@ class Resolvers {
     { user, dataSources }: Context,
   ) {
     if (!user) {
-      return {};
+      return null;
     }
 
     try {

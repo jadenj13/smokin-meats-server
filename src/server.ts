@@ -43,7 +43,7 @@ class Server {
     res: express.Response;
   }) {
     let user = null;
-    const token = req.headers['authorization'];
+    const token = req.headers['authorization'] || req.cookies['token'];
     if (token) {
       try {
         user = jwt.verify(token.replace('Bearer ', ''), config.jwtSecret);
